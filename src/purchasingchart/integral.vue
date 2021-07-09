@@ -1,5 +1,5 @@
 <template>
-  <!-- 评审专家画像排名top250 -->
+  <!-- 评审认证积分排名 -->
   <div class="head">
     <div class="title">
       <span class="font">{{title}}</span>
@@ -12,11 +12,8 @@
           </div>
         </div>
         <div class="contenttitle_box">
-            <div>
-                
-            </div>
           <div class="contenttitle" v-for="list in listdata" :key="list.pm">
-            <div class="content_box"><span class="contentfont">{{list.pm}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list.head}}</span></div>
             <div class="content_box"><span class="contentfont">{{list.pm}}</span></div>
             <div class="content_box"><span class="contentfont">{{list.name}}</span></div>
           </div>
@@ -28,16 +25,16 @@
 </template>
 <script>
 export default {
-  name: 'success',
+  name: 'integral',
   data() {
     return {
-      title: '采购成功率',
-      headerdata: [ '累计成功率', '年份', '历年成功率'],
-      success:['80%'],
+      title: '评审认证积分排名',
+      headerdata: [ '排名', '采购经理', '评审认证积分'],
       listdata: [
-        { head: '1季度', pm: '2020年', name: '90%'},
-        { head: '1季度', pm: '2019年', name: '80%'},
-        { head: '1季度', pm: '2018年', name: '70%'},
+        { head: '1季度', pm: '1', name: '小玉', company: '单位A', core: '8.9' },
+        { head: '1季度', pm: '2', name: '张三', company: '单位B', core: '8.9' },
+        { head: '1季度', pm: '3', name: '李四', company: '单位C', core: '8.9' },
+        { head: '1季度', pm: '4', name: '王五', company: '单位D', core: '8.9', },
       ]
     }
   }
@@ -45,7 +42,7 @@ export default {
 </script>
 <style scoped>
 .table {
-  display: flex;
+  /* display: flex; */
   max-width: 27.5rem;
   max-height: 30.125rem;
   flex-wrap: wrap;
