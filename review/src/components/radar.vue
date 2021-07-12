@@ -1,5 +1,5 @@
 <template>
-<!-- 评审专家画像 -->
+  <!-- 评审专家画像 -->
   <div class="box">
     <div class="charts" ref="radarchart">
     </div>
@@ -16,22 +16,40 @@ export default {
       list: null
     }
   },
+  // created() {
+  //   console.log(11111);
+  //   var formID = this.GetRequest("formID");
+  //   console.log(formID);
+  //   // 将yigo查询的值赋值给list
+  //   this.list = window.parent.exec(formID, "DBNamedQuery('ProfessionalEducation')");
+  //   console.log('this.list', this.list);
+  // },
   mounted() {
     this.initChart()
     this.getData()
   },
   methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.radarchart)
     },
-    // 获取数据
+    // 数据处理
     getData() {
-      // 加强接口渲染
-      // const {data:ret} = await this.$http.get('')
-      const data = [{ name: '1', value: '1' }, { name: '2', value: '2' }]
-      console.log(data);
-      this.list = data
+      // let ydata = this.list.allRows.map(el => {
+      //   return el.vals[0]
+      // })
+      // console.log('ydata', ydata);
       this.updateData()
     },
     // 更新数据
@@ -78,8 +96,8 @@ export default {
           axisLine: {
             show: false
           },
-          name:{
-            color:'#ffffff'
+          name: {
+            color: '#ffffff'
           }
         },
         series: [
@@ -106,7 +124,7 @@ export default {
 .box {
   /* flex: 1; */
   /* margin: 20px 15px; */
-  margin: 1.25rem .9375rem;
+  margin: 1.25rem 0.9375rem;
   /* width: 25%;
   height: 25%; */
   width: 27.5rem;
@@ -122,11 +140,11 @@ export default {
   width: 27.5rem;
   height: 33.125rem;
   border: 1px solid black;
-  margin: 1.25rem .625rem;
+  margin: 1.25rem 0.625rem;
   background: linear-gradient(#0079d0, #004576);
 }
 .title {
-  margin: .9375rem auto .625rem auto;
+  margin: 0.9375rem auto 0.625rem auto;
   text-align: center;
 }
 .font {
