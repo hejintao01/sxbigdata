@@ -39,8 +39,8 @@
   </div>
 </template>
 <script>
+import tab from '../purchasingchart/nav.vue'
 import columnchart from '../purchasingchart/columnchart.vue'
-import tab from '../components/nav.vue'
 import toptable from '../purchasingchart/toptable.vue'
 import tend from '../purchasingchart/tend.vue'
 import portrait from '../purchasingchart/portrait.vue'
