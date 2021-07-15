@@ -1,95 +1,136 @@
-
 <template>
- <!-- 专家专业能力排名 -->
+  <!-- 专家能力排行 -->
   <div class="head">
     <div class="title">
       <span class="font">{{title}}</span>
     </div>
-    <div class="abilitybox">
+    <div class="table">
       <div class="content">
-        <div v-for="(item,index) in data" :key="index" class="content_box">
-          <span class="content_font">{{item}}</span>
-        </div>
-      </div>
-      <div class="foot">
-        <div class="foot_top">
-          <div class="foot_box" v-for="(list,index) in test" :key="index">
-            <span class="foot_font">{{list.id}}</span>
-            <span class="foot_font">{{list.name}}</span>
-            <span class="foot_font">{{list.a}}</span>
-            <span class="foot_font">{{list.b}}</span>
-            <span class="foot_font">{{list.c}}</span>
-            <span class="foot_font">{{list.d}}</span>
-            <span class="foot_font">{{list.e}}</span>
-            <span class="foot_font">{{list.f}}</span>
+        <div class="tablebox">
+          <div v-for="(item,index) in headerdata" :key="index" class="header">
+            <span class="headerfont">{{item}}</span>
           </div>
+        </div>
+        <div class="contenttitle" v-for="list in listdata" :key="list.pm">
+          <span class="contentfont">{{list[0].c[0]}}</span>
+          <span class="contentfont">{{list[1]}}</span>
+          <span class="contentfont">{{list[7].c[0]}}</span>
+          <span class="contentfont">{{list[2].c[0]}}</span>
+          <span class="contentfont">{{list[3].c[0]}}</span>
+          <span class="contentfont">{{list[4].c[0]}}</span>
+          <span class="contentfont">{{list[5].c[0]}}</span>
+          <span class="contentfont">{{list[6].c[0]}}</span>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-
 export default {
   name: 'ability',
   data() {
     return {
-      title: '专家专业能力排名',
-      data: ['当前排名', '评审专家', '综合得分', '评审年限得分', '考试成绩得分', '考试次数', '评审项目数量得分', '评审项目类别得分'],
-      test: [{
-        id: '3', name: '张三', a: '8.1', b: '8', c: '8', d: '9', e: '7.8', g: '9',f:'5'
-      }]
+      title: '专家专业能力排行',
+      headerdata: ['当前排名', '评审专家', '综合得分', '评审年限得分', '考试成绩得分', '考试次数', '评审项目数量得分', '评审项目类别得分'],
+      listdata: null
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('ProfessionalAbilityRanking')");
+    console.log('画像排名this.list', arr);
+    // X,Y轴赋值
+    this.listdata = arr.allRows.map(el => {
+      return el.vals
+    })
+  },
+  methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
   }
 }
 </script>
-
 <style scoped>
-.abilitybox {
-  height: 30.0625rem;
+.head {
   width: 27.5rem;
-  display: flex;
-  flex-direction: column;
-
+  height: 33.125rem;
+  border: 0.0625rem solid black;
+  margin: 1.25rem 0.625rem;
+  background: linear-gradient(#0079d0, #004576);
 }
-.content {
-  height: 23.75rem;
-  display: flex;
-  background-color: pink;
+.title {
+  margin: 0.9375rem auto 0.625rem auto;
+  text-align: center;
 }
-.content_box {
-  width: 3.4375rem;
-  border: .0625rem solid black;
+.font {
+  color: #ffffff;
+  font-size: 1.125rem;
+  font-weight: bold;
+}
+.table {
+  /* display: flex; */
+  max-width: 27.5rem;
+  max-height: 30.125rem;
+  flex-wrap: wrap;
+  /* width: 27.5rem; */
+  overflow: auto;
+}
+.tablebox {
+  height: 23.625rem;
+  width: 27.5rem;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+.header {
+  flex: 1;
+  border: 0.0625rem solid black;
   position: relative;
-    background: linear-gradient(#0079D0,#004576);
-
+  background-color: #012d86;
 }
-.content_font {
+.headerfont {
+  font-size: 1.125rem;
   position: absolute;
   bottom: 0px;
   padding: 0px;
   margin: 0px;
   color: #ffffff;
 }
-.foot {
+.content {
   flex: 1;
+  margin: 0;
+  padding: 0;
+  /* height: 30rem; */
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  border: 0.0625rem solid black;
+  align-content: flex-start;
 }
-.foot_top {
+.contenttitle {
+  width: 27.5rem;
+  height: 6.4375rem;
   display: flex;
-  align-items: stretch;
+  background-color: #007bd3;
 }
-.foot_box {
+.contentfont {
   flex: 1;
-  display: flex;
-  align-items: stretch;
-  background: linear-gradient(#0079D0,#004576);
-}
-.foot_font {
-  width: 3.3125rem;
-  border: .0625rem solid black;
-  text-align: center;
-  line-height: 6.3125rem;
   color: #ffffff;
+  font-size: 1rem;
+  line-height:6.4375rem;
+  text-align: center;
+  border: 0.0625rem solid black;
 }
 </style>

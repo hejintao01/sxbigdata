@@ -8,13 +8,13 @@
       <toptable></toptable>
       <brokenline></brokenline>
       <portrait></portrait>
+      <columnchartover></columnchartover>
       <columnchart></columnchart>
-      <columnchartover></columnchartover>
-      <columnchartover></columnchartover>
+      <major></major>
       <ability></ability>
       <matching></matching>
       <mismatching></mismatching>
-      <mismatching></mismatching>
+      <resume></resume>
       <trend></trend>
       <review></review>
       <quality></quality>
@@ -49,6 +49,7 @@
 <script>
 import columnchart from '../components/columnchart.vue'
 import columnchartover from '../components/columnchartover.vue'
+import major from '../components/major.vue'
 import radar from '../components/radar.vue'
 import brokenline from '../components/brokenline.vue'
 import tab from '../components/nav.vue'
@@ -57,6 +58,7 @@ import portrait from '../components/portrait.vue'
 import ability from '../components/ability.vue'
 import matching from '../components/matching.vue'
 import mismatching from '../components/mismatching.vue'
+import resume from '../components/resume.vue'
 import trend from '../components/trend.vue'
 import review from '../components/reviewtop10.vue'
 import quality from '../components/quality.vue'
@@ -103,6 +105,7 @@ export default {
     ability,
     matching,
     mismatching,
+    resume,
     trend,
     review,
     quality,
@@ -130,7 +133,8 @@ export default {
     abnormal,
     behavior,
     preference,
-    scoring
+    scoring,
+    major
 
   },
 

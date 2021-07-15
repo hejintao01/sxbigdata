@@ -15,26 +15,21 @@ export default {
     return {
       chartInstance: null,
       list: null,
-      ydata:null,
-      xdata:null
+      ydata: null,
+      xdata: null
     }
   },
   created() {
-    console.log(11111);
     var formID = this.GetRequest("formID");
-    console.log(formID);
     // 将yigo查询的值赋值给list
     this.list = window.parent.exec(formID, "DBNamedQuery('ProfessionalEducation')");
-    console.log('this.list', this.list);
     // X,Y轴赋值
     this.ydata = this.list.allRows.map(el => {
       return el.vals[0]
     })
     this.xdata = this.list.allRows.map(el => {
-        return el.vals[1].c[0]
+      return el.vals[1].c[0]
     })
-    console.log('ydata', this.ydata);
-    console.log('xdata', this.xdata);
   },
   mounted() {
     this.initChart()
@@ -81,9 +76,10 @@ export default {
             }
           }
         },
-        grid:{
-          width:'auto'
+        grid: {
+          left: '15%',//距离左边距
         },
+
         xAxis: {
           type: 'value',
           splitLine: {

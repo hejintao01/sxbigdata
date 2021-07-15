@@ -12,15 +12,16 @@
           </div>
         </div>
         <div class="contenttitle" v-for="list in listdata" :key="list.pm">
-          <span class="contentfont">{{list.pm}}</span>
-          <span class="contentfont">{{list.name}}</span>
-          <span class="contentfont">{{list.company}}</span>
-          <span class="contentfont">{{list.core}}</span>
-          <span class="contentfont">{{list.grown}}</span>
-          <span class="contentfont">{{list.lable}}</span>
-          <span class="contentfont">{{list.price}}</span>
-          <span class="contentfont">{{list.xinyong}}</span>
-          <span class="contentfont">{{list.aihao}}</span>
+          <span class="contentfont">{{list[0].c[0]}}</span>
+          <span class="contentfont">{{list[1]}}</span>
+          <span class="contentfont">{{list[2]}}</span>
+          <span class="contentfont">{{list[3].c[0]}}</span>
+          <span class="contentfont">{{list[4].c[0]}}</span>
+          <span class="contentfont">{{list[5].c[0]}}</span>
+          <span class="contentfont">{{list[6].c[0]}}</span>
+          <span class="contentfont">{{list[7].c[0]}}</span>
+          <span class="contentfont">{{list[8].c[0]}}</span>
+          <span class="contentfont">{{list[9].c[0]}}</span>
         </div>
       </div>
     </div>
@@ -32,17 +33,32 @@ export default {
   data() {
     return {
       title: '评审专家画像排名top250',
-      headerdata: ['排名', '专家', '单位', '综合得分', '专业水平', '成长水平', '价值水平', '信用水平', '偏好水平'],
-      listdata: [
-        { pm: '1', name: '小玉', company: '单位A', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-        { pm: '2', name: '张三', company: '单位B', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-        { pm: '3', name: '李四', company: '单位C', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-        { pm: '4', name: '王五', company: '单位D', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-        { pm: '5', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-        { pm: '6', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-        // { pm: '7', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-      ]
+      headerdata: [ '专家编号', '专家姓名', '所属公司、部门', '专业水平', '价值水平','成长水平', '信用水平', '偏好水平', '综合得分','当前排名'],
+      listdata:null
     }
+  },
+   created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('RadarImageAndPortraitRanking')");
+    console.log('画像排名this.list', arr);
+    // X,Y轴赋值
+    this.listdata = arr.allRows.map(el => {
+      return el.vals
+    })
+  },
+  methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
   }
 }
 </script>
@@ -70,7 +86,7 @@ export default {
   max-height: 30.125rem;
   flex-wrap: wrap;
   /* width: 27.5rem; */
-  /* overflow: auto; */
+  overflow: auto;
 }
 .tablebox {
   height: 7.5rem;
@@ -84,26 +100,24 @@ export default {
 .header {
   flex: 1;
   border: .0625rem solid black;
-  position: relative;
+  display: flex;
+  align-items: center;
   background-color: #012D86;
 }
 .headerfont {
+  flex: 1;
   font-size: 1.125rem;
-  position: absolute;
-  bottom: 0px;
-  padding: 0px;
-  margin: 0px;
+  text-align: center;
   color: #ffffff;
 }
 .content {
   flex: 1;
   margin: 0;
   padding: 0;
-  height: 30rem;
+  /* height: 30rem; */
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  border: .0625rem solid black;
   align-content: flex-start;
 }
 .contenttitle {

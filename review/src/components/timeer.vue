@@ -26,23 +26,12 @@ export default {
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.chart)
     },
-    // 获取数据
+    // 处理数据
     getData() {
-      // 加强接口渲染
-      // const {data:ret} = await this.$http.get('')
-      const data = [{ name: '1', value: '1' }, { name: '2', value: '2' }]
-      console.log(data);
-      this.list = data
       this.updateData()
     },
     // 更新数据
     updateData() {
-      const tabname = this.list.map((el) => {
-        return el.name
-      })
-      const tabvalue = this.list.map((el) => {
-        return el.value
-      })
       const option = {
         title: {
           text: '评审时长top10专家',

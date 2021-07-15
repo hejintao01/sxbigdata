@@ -14,25 +14,46 @@ export default {
   data() {
     return {
       chartInstance: null,
-      list: null
+      list: null,
+      xdata:null,
+      ydata:null
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    this.list = window.parent.exec(formID, "DBNamedQuery('AgeDistributionOfExperts')");
+    console.log('this.list', this.list);
+    // X,Y轴赋值
+    this.xdata = this.list.allRows.map(el => {
+      return el.vals[0]
+    })
+    this.ydata = this.list.allRows.map(el => {
+        return el.vals[1].c[0]
+    })
   },
   mounted() {
     this.initChart()
     this.getData()
   },
   methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.chart)
     },
-    // 获取数据
+    // 处理数据并更新
     getData() {
-      // 加强接口渲染
-      // const {data:ret} = await this.$http.get('')
-      const data = [{ name: '1', value: '1' }, { name: '2', value: '2' }]
-      console.log(data);
-      this.list = data
       this.updateData()
     },
     // 更新数据
@@ -58,7 +79,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['20-30', '30-40', '40-50', '50-60'],
+          data: this.xdata,
           axisLabel: {
             color: '#FFFFFF'
           },
@@ -87,7 +108,7 @@ export default {
         series: [
           {
             type: 'bar',
-            data: ['8', '14', '31', '42']
+            data: this.ydata
           }
         ],
         color: '#5B9BD5'

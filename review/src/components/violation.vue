@@ -14,35 +14,64 @@ export default {
   data() {
     return {
       chartInstance: null,
-      list: null
+      data: null,
+      reason: ['中途退出次数', '迟到次数', '早退次数', '中途出入次数'],
+      pieList: null,
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    this.list = window.parent.exec(formID, "DBNamedQuery('StatusQuoOfViolations')");
+    console.log('违规行为现状分析this.list', this.list);
+    // 赋值
+    this.data = this.list.allRows[0].vals.map(el => {
+      return el.c[0]
+    })
+    console.log("数据库值this.data", this.data);
   },
   mounted() {
     this.initChart()
     this.getData()
   },
   methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.chart)
     },
-    // 获取数据
+    // 处理数据
     getData() {
-      // 加强接口渲染
-      // const {data:ret} = await this.$http.get('')
-      const data = [{ name: '1', value: '1' }, { name: '2', value: '2' }]
-      console.log(data);
-      this.list = data
+      // 饼图对数据处理
+      this.pieList = [];
+      let arr =[]
+      this.data.forEach((el,index) => {
+        if(0<index&&index<5){
+          arr.push(el)
+        }
+      });
+      console.log(arr);
+      for (var i = 0; i < this.data.length; i++) {
+          var d = new Object();
+          d.name = this.reason[i];
+          d.value =arr[i];
+          this.pieList.push(d)
+      }
+      console.log('分析this.pieList', this.pieList);
       this.updateData()
     },
     // 更新数据
     updateData() {
-      const tabname = this.list.map((el) => {
-        return el.name
-      })
-      const tabvalue = this.list.map((el) => {
-        return el.value
-      })
       const option = {
         title: {
           text: '违规行为现状分析',
@@ -54,7 +83,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{b}:{d}%' 
+          formatter: '{b}:{d}%'
         },
         legend: {
           orient: 'vertical',
@@ -64,18 +93,12 @@ export default {
             color: '#FFFFFF'
           }
         },
+        color: ['#A5A5A5', '#FFC000', '#5B9BD5', '#ED7D31'],
         series: [
           {
             type: 'pie',
             radius: '50%',
-            data: [
-              { value: 58, name: '上网',      itemStyle: { color: '#A5A5A5' } },
-              { value: 9, name: '迟到',       itemStyle: { color: '#FFC000' }  },
-              { value: 5, name: '早退',       itemStyle: { color: '#5B9BD5' }  },
-              { value: 13, name: '睡觉',      itemStyle: { color: '#ED7D31' }   },
-              { value: 5, name: '打游戏',     itemStyle: { color: '#70AD47' }  },
-              { value: 10, name: '拨打电话',  itemStyle: { color: '#4472C4' }  },
-            ],
+            data: this.pieList,
             label: {
               normal: {
                 show: true,

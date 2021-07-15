@@ -15,10 +15,12 @@
           </div>
         </div>
         <div class="contenttitle" v-for="list in listdata" :key="list.pm">
-          <div class="contentfont_box"><span class="contentfont">{{list.pm}}</span></div>
-          <div class="contentfont_box"><span class="contentfont">{{list.name}}</span></div>
-          <div class="contentfont_box"><span class="contentfont">{{list.company}}</span></div>
-          <div class="contentfont_box"> <span class="contentfont">{{list.core}}</span></div>
+          <div class="contentfont_box"><span class="contentfont">{{list[0].c[0]}}</span></div>
+          <div class="contentfont_box"><span class="contentfont">{{list[1]}}</span></div>
+          <div class="contentfont_box"><span class="contentfont">{{list[2]}}</span></div>
+          <div class="contentfont_box"><span class="contentfont">{{list[3]}}</span></div>
+          <div class="contentfont_box"><span class="contentfont">{{list[4]}}</span></div>
+          <div class="contentfont_box"><span class="contentfont">{{list[5]}}</span></div>
         </div>
       </div>
     </div>
@@ -30,13 +32,32 @@ export default {
   data() {
     return {
       title: '评审专家与采购项目专业不匹配top10',
-      headerdata: ['部门名称', '部门专业', '采购项目专业', '匹配度'],
-      listdata: [
-        { pm: '部门A', name: '专业A', company: '专业A', core: '100%' },
-        { pm: '部门B', name: '专业B', company: '专业B', core: '40%' },
-        { pm: '部门C', name: '专业C', company: '专业C', core: '30%' },
-      ]
+      headerdata: ['专家编号', '专家姓名', '所属单位', '不匹配专业', '专业人数', '人数是否充足'],
+      listdata: []
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('Top10MajorMismatch')");
+    console.log('评审专家与采购项目专业不匹配top10this.list', arr);
+    // X,Y轴赋值
+    this.listdata = arr.allRows.map(el => {
+      return el.vals
+    })
+  },
+  methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
   }
 }
 </script>
@@ -61,6 +82,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   width: 27.5rem;
+  overflow: auto;
 }
 .tablebox {
   height: 12.5rem;
@@ -97,7 +119,6 @@ export default {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  border: 0.0625rem solid black;
   align-content: flex-start;
 }
 .contenttitle {

@@ -12,8 +12,8 @@ const postcss = px2rem({
 // 使用等比适配插件
 module.exports = {
   lintOnSave: true,
-  devServer:{
-    open:true
+  devServer: {
+    open: true
   },
   css: {
     loaderOptions: {
@@ -24,5 +24,7 @@ module.exports = {
       }
     }
   },
-  publicPath:'./'
+  // 输出文件目录
+  outputDir: 'dist2',
+  publicPath: './'
 }

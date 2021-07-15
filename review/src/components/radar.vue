@@ -13,17 +13,22 @@ export default {
   data() {
     return {
       chartInstance: null,
-      list: null
+      list: []
     }
   },
-  // created() {
-  //   console.log(11111);
-  //   var formID = this.GetRequest("formID");
-  //   console.log(formID);
-  //   // 将yigo查询的值赋值给list
-  //   this.list = window.parent.exec(formID, "DBNamedQuery('ProfessionalEducation')");
-  //   console.log('this.list', this.list);
-  // },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('RadarImageAndPortraitRanking')");
+    console.log('评审专家画像this.list', arr);
+    // 赋值
+    let arr2 = arr.allRows.map(el => {
+      return el.vals
+    })
+    arr2[0].slice(4, 8).forEach(e => {
+      this.list.push(e.c[0])
+    })
+  },
   mounted() {
     this.initChart()
     this.getData()
@@ -46,10 +51,6 @@ export default {
     },
     // 数据处理
     getData() {
-      // let ydata = this.list.allRows.map(el => {
-      //   return el.vals[0]
-      // })
-      // console.log('ydata', ydata);
       this.updateData()
     },
     // 更新数据
@@ -75,49 +76,42 @@ export default {
             }
           }
         },
-        grid: {
-          top: '50%',//距上边距
-
-          left: '1%',//距离左边距
-
-          right: '1%',//距离右边距
-
-          bottom: '1%',//距离下边距
-
+        grid:{
+          left:'15%'
         },
-        radar: {
-          indicator: [
-            { name: '成长水平', max: 6500 },
-            { name: '专业水平', max: 16000 },
-            { name: '价值水平', max: 30000 },
-            { name: '偏好水平', max: 38000 },
-            { name: '信用水平', max: 52000 },
-          ],
+      radar: {
+        indicator: [
+          { name: '成长水平', max: 10 },
+          { name: '专业水平', max: 10 },
+          { name: '价值水平', max: 10 },
+          { name: '偏好水平', max: 10 },
+          { name: '信用水平', max: 10 },
+        ],
           axisLine: {
-            show: false
+          show: false,
           },
-          name: {
-            color: '#ffffff'
+        name: {
+          color: '#ffffff',
           }
-        },
-        series: [
-          {
-            name: '预算 vs 开销（Budget vs spending）',
-            type: 'radar',
-            data: [
-              {
-                value: [4200, 3000, 20000, 35000, 50000, 18000],
-              }
-            ],
-            lineStyle: {
-              color: '#5B9BD5'
-            },
-          }
-        ]
+      },
+      series: [
+        {
+          name: '预算 vs 开销（Budget vs spending）',
+          type: 'radar',
+          data: [
+            {
+              value: this.list,
+            }
+          ],
+          lineStyle: {
+            color: '#5B9BD5'
+          },
+        }
+      ],
       }
       this.chartInstance.setOption(option)
-    }
   }
+}
 }
 </script>
 <style>

@@ -14,25 +14,54 @@ export default {
   data() {
     return {
       chartInstance: null,
-      list: null
+      list: null,
+      xdata: null,
+      ydataone: null,
+      ydatatwo: null,
+      ydatathree: null
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    this.list = window.parent.exec(formID, "DBNamedQuery('FrequencyAttendanceAbsence')");
+    console.log('出席、缺席频次分析this.list', this.list);
+    // X,Y轴赋值
+    this.xdata = this.list.allRows.map(el => {
+      return el.vals[1]
+    })
+    this.ydataone = this.list.allRows.map(el => {
+      return el.vals[2].c[0]
+    })
+    this.ydatatwo = this.list.allRows.map(el => {
+      return el.vals[3].c[0]
+    })
+    this.ydatathree = this.list.allRows.map(el => {
+      return el.vals[4].c[0]
+    })
   },
   mounted() {
     this.initChart()
     this.getData()
   },
   methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.radarchart)
     },
     // 获取数据
     getData() {
-      // 加强接口渲染
-      // const {data:ret} = await this.$http.get('')
-      const data = [{ name: '1', value: '1' }, { name: '2', value: '2' }]
-      console.log(data);
-      this.list = data
       this.updateData()
     },
     // 更新数据
@@ -71,7 +100,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['2016年', '2017年', '2018年', '2019年', '2020年'],
+          data: this.xdata,
           axisLabel: {
             color: "#FFFFFF",
           },
@@ -128,14 +157,14 @@ export default {
         series: [
           {
             name: '出席率',
-            data: [80, 75, 81, 82, 79],
+            data: this.ydatathree,
             type: 'line',
             showSymbol: false,
             color: '#A5A5A5'
           },
           {
             name: '出席',
-            data: [80, 78, 82, 88, 76],
+            data: this.ydataone,
             type: 'bar',
             showSymbol: false,
             color: '#5B9BD5',
@@ -143,7 +172,7 @@ export default {
           },
           {
             name: '缺席',
-            data: [12, 15, 13, 14, 20],
+            data: this.ydatatwo,
             type: 'bar',
             showSymbol: false,
             color: '#ED7D31',
