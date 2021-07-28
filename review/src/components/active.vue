@@ -1,26 +1,24 @@
 <template>
 <!-- 活跃评委top50分析 -->
-  <div class="head">
+  <div class="minhead">
     <div class="title">
       <span class="font">{{title}}</span>
     </div>
-    <div class="table">
-      <div class="content">
-        <div class="tablebox">
-          <div v-for="(item,index) in headerdata" :key="index" class="header">
-            <span class="headerfont">{{item}}</span>
-          </div>
-        </div>
-        <div class="contenttitle" v-for="list in listdata" :key="list.pm">
-          <span class="contentfont">{{list[0].c[0]}}</span>
-          <span class="contentfont">{{list[1].c[0]}}</span>
-          <span class="contentfont">{{list[2].c[0]}}</span>
-          <span class="contentfont">{{list[3].c[0]}}</span>
-          <span class="contentfont">{{list[4]}}</span>
-          <span class="contentfont">{{list[5]}}</span>
-          <span class="contentfont">{{list[6].c[0]}}</span>
-        </div>
-      </div>
+    <div class="mintablebox">
+      <table class="mintable">
+        <tr class="header">
+          <td class="header_font" v-for="(item,index) in headerdata" :key="index">{{item}}</td>
+        </tr>
+        <tr class="content" v-for="(list,index) in listdata" :key="index">
+          <td class="content_font">{{list[0]}}</td>
+          <td class="content_font">{{list[1]}}</td>
+          <td class="content_font">{{list[2]}}</td>
+          <td class="content_font">{{list[3]}}</td>
+          <td class="content_font">{{list[4]}}</td>
+          <td class="content_font">{{list[5]}}</td>
+          <td class="content_font">{{list[6]}}</td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -40,7 +38,7 @@ export default {
     let arr = window.parent.exec(formID, "DBNamedQuery('ActiveJudgesTop50')");
     console.log('活跃评委top50分析', arr);
     // X,Y轴赋值
-    this.listdata = arr.allRows.map(el => {
+    this.listdata = JSON.parse(JSON.stringify(arr)).allRows.map(el => {
       return el.vals
     })
   },
@@ -60,80 +58,21 @@ export default {
 }
 </script>
 <style scoped>
-.head {
-  width: 27.5rem;
-  height: 33.125rem;
-  border: .0625rem solid black;
-  margin: 1.25rem .625rem;
-  background: linear-gradient(#0079D0,#004576);
-
+::-webkit-scrollbar {
+  /*隐藏滚轮*/
+  display: none;
 }
-.title {
-  margin: .9375rem auto .625rem auto;
-  text-align: center;
-}
-.font {
-  color: #ffffff;
-  font-size: 1.125rem;
-  font-weight: bold;
-}
-.table {
-  /* display: flex; */
-  max-width: 27.5rem;
-  max-height: 30.125rem;
-  flex-wrap: wrap;
-  /* width: 27.5rem; */
+.mintablebox{
+  width: 28.1875rem;
+  height: 19.6rem;
   overflow: auto;
 }
-.tablebox {
-  height: 7.5rem;
-  width: 27.5rem;
+.mintable{
+  width: 28.1875rem;
+  height: 21.3125rem;
+  border: 0;
   margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-}
-.header {
-  flex: 1;
-  border: .0625rem solid black;
-  /* position: relative; */
-  display: flex;
-  align-items: center;
-  background-color: #012D86;
-}
-.headerfont {
-  flex: 1;
-  font-size: 1.125rem;
-  text-align: center;
-  /* position: absolute;
-  bottom: 0px;
-  padding: 0px;
-  margin: 0px; */
-  color: #ffffff;
-}
-.content {
-  flex: 1;
-  margin: 0;
-  padding: 0;
-  /* height: 30rem; */
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  align-content: flex-start;
-}
-.contenttitle {
-  width: 27.5rem;
-  height: 3.75rem;
-  display: flex;
-  background-color: #007BD3;
-}
-.contentfont {
-  flex: 1;
-  color: #ffffff;
-  font-size: 1rem;
-  line-height: 3.75rem;
-  text-align: center;
-  border: .0625rem solid black;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 </style>

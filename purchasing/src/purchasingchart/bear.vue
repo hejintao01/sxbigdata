@@ -32,28 +32,65 @@ export default {
     return {
       title: '项目承担分析',
       headerdata: ['', '本省', '本部门', '本组', '本人'],
-      listdata: [
-        { head: '1季度', pm: '1', name: '小玉', company: '单位A', core: '8.9' },
-        { head: '1季度', pm: '2', name: '张三', company: '单位B', core: '8.9' },
-        { head: '1季度', pm: '3', name: '李四', company: '单位C', core: '8.9' },
-        { head: '1季度', pm: '4', name: '王五', company: '单位D', core: '8.9', },
-        // { head: '专业水平', pm: '5', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        // { head: '成长水平', pm: '6', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        // { head: '价值水平', pm: '6', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        // { pm: '7', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-      ]
+      listdata: []
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    // 本人
+    let list = []
+    let list1 = []
+    let list2 = []
+    let list3 = []
+    let arr = window.parent.exec(formID, "DBNamedQuery('ProjectCommitment')");
+    // 本组
+    let arr1 = window.parent.exec(formID, "DBNamedQuery('ProjectCommitment_Group')");
+    // 本部门
+    let arr2 = window.parent.exec(formID, "DBNamedQuery('ProjectCommitment_Dep')");
+    // 本省
+    let arr3 = window.parent.exec(formID, "DBNamedQuery('ProjectCommitment_Pro')");
+    // 转换数据格式
+    list = JSON.parse(JSON.stringify(arr)).map( el =>{
+      return el.vals
+    })
+    list1 = JSON.parse(JSON.stringify(arr1)).map( el =>{
+      return el.vals
+    })
+    list2 = JSON.parse(JSON.stringify(arr2)).map( el =>{
+      return el.vals
+    })
+    list3 = JSON.parse(JSON.stringify(arr3)).map( el =>{
+      return el.vals
+    })
+  },
+  methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
   }
 }
 </script>
 <style scoped>
+::-webkit-scrollbar {
+  /*隐藏滚轮*/
+  display: none;
+}
 .table {
   /* display: flex; */
   max-width: 27.5rem;
   max-height: 30.125rem;
   flex-wrap: wrap;
   /* width: 27.5rem; */
-  overflow: hidden;
+  overflow: auto;
 }
 .tablebox {
   height: 7.5rem;
@@ -100,7 +137,6 @@ export default {
   display: flex;
   align-items: center;
   background-color: #012d86;
-  
 }
 .content_box {
   flex: 1;

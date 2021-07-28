@@ -12,18 +12,18 @@
       <efficiency></efficiency>
       <benefit></benefit>
       <bear></bear>
-      <busyhours></busyhours>
-      <success></success>
+      <!-- <busyhours></busyhours>
+      <success></success> -->
       <system></system>
       <integral></integral>
       <study></study>
       <authentication></authentication>
-      <grown></grown>
-      <ability></ability>
+      <!-- <grown></grown> -->
+      <!-- <ability></ability> -->
       <age></age>
       <education></education>
       <qualifications></qualifications>
-      <error></error>
+      <!-- <error></error>
       <drilldown></drilldown>
       <relation></relation>
       <change></change>
@@ -34,7 +34,7 @@
       <matter></matter>
       <alert></alert>
       <turn></turn>
-      <attend></attend>
+      <attend></attend> -->
     </div>
   </div>
 </template>

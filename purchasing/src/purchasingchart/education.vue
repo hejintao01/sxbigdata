@@ -14,35 +14,61 @@ export default {
   data() {
     return {
       chartInstance: null,
-      list: null
+      list: null,
+      xdata: null,
+      ydata: null,
+      pieList: null,
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('PurchasingManagerDegree')");
+    this.list = JSON.parse(JSON.stringify(arr))
+    console.log('采购经理成员学历构成', this.list);
+    // X,Y轴赋值
+    this.xdata = this.list.allRows.map(el => {
+      return el.vals[0]
+    })
+    this.ydata = this.list.allRows.map(el => {
+      return el.vals[2]
+    })
+
   },
   mounted() {
     this.initChart()
     this.getData()
   },
   methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.chart)
     },
     // 获取数据
     getData() {
-      // 加强接口渲染
-      // const {data:ret} = await this.$http.get('')
-      const data = [{ name: '1', value: '1' }, { name: '2', value: '2' }]
-      console.log(data);
-      this.list = data
+      // 饼图对数据处理
+      this.pieList = [];
+      for (let i = 0; i < this.xdata.length; i++) {
+        var d = new Object();
+        d.name = this.xdata[i];
+        d.value = this.ydata[i];
+        this.pieList.push(d)
+      }
       this.updateData()
     },
     // 更新数据
     updateData() {
-      const tabname = this.list.map((el) => {
-        return el.name
-      })
-      const tabvalue = this.list.map((el) => {
-        return el.value
-      })
       const option = {
         title: {
           text: '采购经理成员学历构成',
@@ -58,23 +84,19 @@ export default {
         },
         legend: {
           orient: 'vertical',
-          left: 'right',
+          right: 'left',
           y: 'center',
           textStyle: {
             color: '#FFFFFF'
           }
         },
+        color:['#A5A5A5','#FFC000','#5B9BD5','#ED7D31','pink'],
         series: [
           {
             type: 'pie',
             radius: '50%',
-            data: [
-              { value: 35, name: '大专以下', itemStyle: { color: '#A5A5A5' } },
-              { value: 25, name: '大专', itemStyle: { color: '#FFC000' } },
-              { value: 12, name: '本科', itemStyle: { color: '#5B9BD5' } },
-              { value: 28, name: '硕士', itemStyle: { color: '#ED7D31' } },
-              { value: 28, name: '博士', itemStyle: { color: 'pink' } },
-            ],
+            center:['45%','50%'],
+            data: this.pieList,
             label: {
               normal: {
                 show: true,

@@ -1,7 +1,7 @@
 <template>
   <!--出席、缺席频次分析  -->
-  <div class="box">
-    <div class="charts" ref="radarchart">
+  <div class="frbox">
+    <div class="frcharts" ref="radarchart">
 
     </div>
   </div>
@@ -27,17 +27,17 @@ export default {
     this.list = window.parent.exec(formID, "DBNamedQuery('FrequencyAttendanceAbsence')");
     console.log('出席、缺席频次分析this.list', this.list);
     // X,Y轴赋值
-    this.xdata = this.list.allRows.map(el => {
+    this.xdata = JSON.parse(JSON.stringify(this.list)).allRows.map(el => {
       return el.vals[1]
     })
-    this.ydataone = this.list.allRows.map(el => {
-      return el.vals[2].c[0]
+    this.ydataone = JSON.parse(JSON.stringify(this.list)).allRows.map(el => {
+      return el.vals[2]
     })
-    this.ydatatwo = this.list.allRows.map(el => {
-      return el.vals[3].c[0]
+    this.ydatatwo = JSON.parse(JSON.stringify(this.list)).allRows.map(el => {
+      return el.vals[3]
     })
-    this.ydatathree = this.list.allRows.map(el => {
-      return el.vals[4].c[0]
+    this.ydatathree = JSON.parse(JSON.stringify(this.list)).allRows.map(el => {
+      return el.vals[4]
     })
   },
   mounted() {
@@ -69,12 +69,16 @@ export default {
       const option = {
         title: {
           text: '出席、缺席频次分析',
-          left: 'center',
-          padding: [15, 0, 10, 0],
           textStyle: {
             color: '#FFFFFF',
+            fontSize: 16,
+            fontStyle: 'normal',
+            fontFamily: 'PingFang SC',
+            fontWeight: 500,
+            lineHeight: 16
           },
-
+          left: 'left',
+          padding: [24, 0, 0, 24]
         },
         // 提示框
         tooltip: {
@@ -88,11 +92,17 @@ export default {
         },
         // 图例
         legend: {
-          x: 'center',
-          y: 'bottom',
+          x: 'right',
+          y: 'top',
           textStyle: {
-            color: '#FFFFFF'
+            color: '#CACACA',
+            fontSize: 12,
+            fontStyle: 'normal',
+            fontFamily: 'PingFang SC',
+            fontWeight: 'normal',
+            lineHeight: 17
           },
+          padding: [20, 10, 0, 0],
           itemHeight: 8,
           itemGap: 10,
           icon: 'roundRect',
@@ -103,10 +113,15 @@ export default {
           data: this.xdata,
           axisLabel: {
             color: "#FFFFFF",
+            color: 'rgba(255, 255, 255, 0.65)',
+            width: 0.5,
+            type: 'solid'
           },
           axisLine: {
             lineStyle: {
-              color: '#FFFFFF',
+              color: 'rgba(255, 255, 255, 0.45)',
+              width: 0.5,
+              type: 'solid'
             }
           },
           axisTick: {
@@ -117,42 +132,42 @@ export default {
         yAxis: [
           {
             type: 'value',
-            axisLine: {
-              show: false
-            },
             splitLine: {
               show: false
             },
             axisLabel: {
-              color: '#FFFFFF',
-              formatter: '{value} %'
+              color: '#979797',
+              formatter: '{value} %',
+              fontSize: 12,
+              fontStyle: 'normal',
+              fontFamily: 'PingFang SC',
+              fontWeight: 'normal',
+              lineHeight: 17
             },
             axisTick: {
               alignWithLabel: true,
               show: false
             },
-            max: 90,
-            min: 70,
           },
           {
             type: 'value',
-            //   name: '金额',
-            axisLine: {
-              show: false
-            },
             splitLine: {
               show: false
             },
             axisLabel: {
-              color: '#FFFFFF'
+              color: '#979797',
+              formatter: '{value}',
+              fontSize: 12,
+              fontStyle: 'normal',
+              fontFamily: 'PingFang SC',
+              fontWeight: 'normal',
+              lineHeight: 17
             },
             axisTick: {
               alignWithLabel: true,
               show: false
             },
-            max: 90,
-            min: 0,
-          }
+          },
         ],
         series: [
           {
@@ -160,33 +175,64 @@ export default {
             data: this.ydatathree,
             type: 'line',
             showSymbol: false,
-            color: '#A5A5A5'
+            lineStyle: {
+              width: 4,
+              color: '#61DDAA',
+              type: 'solid'
+            },
           },
           {
             name: '出席',
             data: this.ydataone,
             type: 'bar',
             showSymbol: false,
-            color: '#5B9BD5',
+            barWidth: 30,
+            color: '#7262FD',
             yAxisIndex: 1,
+            itemStyle: {
+              normal: {
+                barBorderRadius: [7, 7, 0, 0]
+              }
+            }
           },
           {
             name: '缺席',
             data: this.ydatatwo,
             type: 'bar',
             showSymbol: false,
-            color: '#ED7D31',
+            color: '#FFD46E',
             yAxisIndex: 1,
+            barWidth: 30,
+            itemStyle: {
+              normal: {
+                barBorderRadius: [7, 7, 0, 0]
+              }
+            }
           }
         ]
       }
       this.chartInstance.setOption(option)
-      // setTimeout(function () {
-      //   window.onresize = function () {
-      //     twChart.resize();
-      //   }
-      // }, 200)
     }
   }
 }
 </script>
+<style scoped>
+.frbox {
+  margin: 1.25rem 0.625rem;
+
+  width: 57.625rem;
+  height: 24.375rem;
+  left: 0;
+  top: 0;
+  border: 0.0625rem solid #2b2c68;
+  box-shadow: 0px 0.5625rem 1.75rem 0.5rem rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  background: #1a1b4e;
+}
+.frcharts {
+  left: 0px;
+  top: 0px;
+  width: 57.625rem;
+  height: 24.375rem;
+}
+</style>

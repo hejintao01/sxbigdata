@@ -25,11 +25,11 @@ export default {
     this.list = window.parent.exec(formID, "DBNamedQuery('Top10ExpertsInProjectEva')");
     console.log('评审项目金额top10专家this.list', this.list);
     // X,Y轴赋值
-    this.ydata = this.list.allRows.map(el => {
+    this.ydata = JSON.parse(JSON.stringify(this.list)).allRows.map(el => {
       return el.vals[1]
     })
-    this.xdata = this.list.allRows.map(el => {
-      return el.vals[2].c[0]
+    this.xdata = JSON.parse(JSON.stringify(this.list)).allRows.map(el => {
+      return el.vals[2]
     })
   },
   mounted() {
@@ -61,11 +61,16 @@ export default {
       const option = {
         title: {
           text: '评审项目金额top10专家',
-          left: 'center',
-          padding: [15, 0, 10, 0],
           textStyle: {
-            color: '#FFFFFF'
+            color: '#FFFFFF',
+            fontSize: 16,
+            fontStyle: 'normal',
+            fontFamily: 'PingFang SC',
+            fontWeight: 500,
+            lineHeight: 16
           },
+          left: 'left',
+          padding: [24, 0, 0, 24]
         },
         // 提示框
         tooltip: {
@@ -90,19 +95,26 @@ export default {
             show: false
           },
           axisLabel: {
-            color: '#FFFFFF'
-          }
+            color: 'rgba(255, 255, 255, 0.65)',
+            fontSize: 13.78,
+            fontStyle: 'normal',
+            fontFamily: 'PingFang SC',
+            fontWeight: 500,
+            lineHeight: 15,
+            margin: 9.38,
+          },
         },
         yAxis: {
           type: 'category',
           data: this.ydata,
           axisLabel: {
-            color: '#FFFFFF'
-          },
-          axisLine: {
-            lineStyle: {
-              color: '#FFFFFF',
-            }
+            color: 'rgba(255, 255, 255, 0.65)',
+            fontSize: 13.78,
+            fontStyle: 'normal',
+            fontFamily: 'PingFang SC',
+            fontWeight: 500,
+            lineHeight: 15,
+            margin: 9.38,
           },
           axisTick: {
             alignWithLabel: true,
@@ -113,9 +125,15 @@ export default {
           {
             type: 'bar',
             data: this.xdata,
+            barWidth: 14,
+            itemStyle: {
+              normal: {
+                barBorderRadius: [0, 7, 7, 0]
+              }
+            }
           }
         ],
-        color: '#5B9BD5'
+        color: '#5B8FF9'
       }
       this.chartInstance.setOption(option)
     }

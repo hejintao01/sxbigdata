@@ -5,32 +5,81 @@
       <span class="font">{{title}}</span>
     </div>
     <div class="tablebox">
-      <div class="top">
-        <div class="topleft">
-          <span class="left">综合得分</span>
-        </div>
-        <div class="content">
-          <div class="content_top">
-            <div class="topheader" v-for="(item,index) in level" :key="index">
-              <span class="toplevel">{{item}}</span>
-            </div>
-          </div>
-          <div class="content_second">
-            <div v-for="(list,index) in branch" :key="index" class="coretitle">
-              <div class="corefontbox">
-                <span class="corefont">{{list.typea}}</span>
-              </div>
-              <div class="corefontbox"> <span class="corefont">{{list.typeb}}</span></div>
-              <div v-if="list.typec" class="corefontbox"> <span class="corefont">{{list.typec}}</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="bottom">
-        <div v-for="(coreitem,index) in core" :key="index" class="bottom_core">
-          <span class="spanfont">{{coreitem}}</span>
-        </div>
-      </div>
+      <table class="tbox">
+        <tr>
+          <td rowspan="2" class="theader">综合得分</td>
+          <td colspan="5" class="theader">任职资格能力</td>
+          <td colspan="5" class="theader">基本业务能力</td>
+          <td colspan="7" class="theader">专业胜任能力</td>
+          <td colspan="4" class="theader">实践创新能力</td>
+          <td colspan="6" class="theader">成长传承能力</td>
+        </tr>
+
+        <tr>
+          <td class="bheader">学历得分</td>
+          <td class="bheader">学位得分</td>
+          <td class="bheader">从事采购工作时长得分</td>
+          <td class="bheader">岗位认证情况得分</td>
+          <td class="bheader">专业资质得分得分</td>
+
+          <td class="bheader">采购预算金额得分</td>
+          <td class="bheader">采购项目数量得分</td>
+          <td class="bheader">采购效率得分</td>
+          <td class="bheader">采购效益得分</td>
+          <td class="bheader">支撑系统应用能力得分</td>
+
+          <td class="bheader">流标率得分</td>
+          <td class="bheader">多轮次采购情况得分</td>
+          <td class="bheader">采购实施差错频次得分</td>
+          <td class="bheader">采购文件变更频次得分</td>
+          <td class="bheader">供应商异议、投诉次数得分</td>
+          <td class="bheader">采购产品质量后评估得分</td>
+          <td class="bheader">采购满意度得分</td>
+
+          <td class="bheader">采购领域管理创新得分</td>
+          <td class="bheader">采购领域科技创新得分</td>
+          <td class="bheader">采购领域课题研究得分</td>
+          <td class="bheader">采购领域最佳实践得分</td>
+
+          <td class="bheader">参加专业培训情况得分</td>
+          <td class="bheader">参加各种竞赛情况得分</td>
+          <td class="bheader">采购案例得分</td>
+          <td class="bheader">采购领域学术论文得分</td>
+          <td class="bheader">经验分享得分</td>
+          <td class="bheader">内训得分</td>
+        </tr>
+
+        <tr v-for="(item,index) in filterData" :key="index">
+          <td class="core">{{item[1]}}</td>
+          <td class="core">{{item[7]}}</td>
+          <td class="core">{{item[8]}}</td>
+          <td class="core">{{item[9]}}</td>
+          <td class="core">{{item[10]}}</td>
+          <td class="core">{{item[11]}}</td>
+          <td class="core">{{item[12]}}</td>
+          <td class="core">{{item[13]}}</td>
+          <td class="core">{{item[14]}}</td>
+          <td class="core">{{item[15]}}</td>
+          <td class="core">{{item[16]}}</td>
+          <td class="core">{{item[17]}}</td>
+          <td class="core">{{item[18]}}</td>
+          <td class="core">{{item[19]}}</td>
+          <td class="core">{{item[20]}}</td>
+          <td class="core">{{item[21]}}</td>
+          <td class="core">{{item[22]}}</td>
+          <td class="core">{{item[23]}}</td>
+          <td class="core">{{item[24]}}</td>
+          <td class="core">{{item[25]}}</td>
+          <td class="core">{{item[26]}}</td>
+          <td class="core">{{item[27]}}</td>
+          <td class="core">{{item[28]}}</td>
+          <td class="core">{{item[29]}}</td>
+          <td class="core">{{item[30]}}</td>
+          <td class="core">{{item[31]}}</td>
+          <td class="core">{{item[32]}}</td>
+          <td class="core">{{item[33]}}</td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -41,111 +90,68 @@ export default {
   data() {
     return {
       title: '画像水平下钻维度分析',
-      level: ['项目质量', '能力水平', '专业水平'],
-      branch: [{ typea: '采购实施', typeb: '采购需求', typec: '采购执行' },
-      { typea: '工作效率', typeb: '工作收益',  },
-      { typea: '教育背景', typeb: '专业资质',  },
-      ],
-      core: ['7.8', '9', '7.6', '6.9', '8.9', '7.8', '8', '7.5']
+      core: []
     }
+  },
+  computed: {
+    filterData: function () {
+      console.log("画像水平下钻维度分析所用数据",JSON.parse(JSON.stringify(this.core)));
+      return JSON.parse(JSON.stringify(this.core));
+    }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('ManagerDimensionAnalysis_L')");
+    console.log('画像水平下钻维度分析', arr);
+    // 赋值
+    this.core = arr.allRows.map(el => {
+      return el.vals
+    })
+    console.log('画像水平下钻维度分析', this.core);
+  },
+  methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
   }
 }
 </script>
 <style scoped>
+
 .tablebox {
   height: 30.0625rem;
   width: 27.5rem;
-  /* background-color: red; */
+  background: linear-gradient(#0079d0, #004576);
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
-.content_top {
-  display: flex;
-  width: 100%;
-  /* height: 8.75rem; */
-}
-.content_second {
-  flex: 1;
-  display: flex;
-  align-items: stretch;
-}
-.coretitle {
-  flex: 1;
-  display: flex;
-  background: linear-gradient(#0079d0, #004576);
-}
-.corefontbox{
-  height: 100%;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  border: 0.0625rem solid black;
-}
-.corefont {
-  flex: 1;
-  text-align: center;
-  color: #ffffff;
-  
-}
-.top {
+.tbox {
+  height: 30.0625rem;
   width: 27.5rem;
-  height: 23.75rem;
-  background-color: pink;
-  display: flex;
-}
-.topleft {
-  height: 23.625rem;
-  width: 3.6rem;
-  font-size: 1rem;
-  background: linear-gradient(#0079d0, #004576);
-  color: #ffffff;
   border: 0.0625rem solid black;
-  display: flex;
-  align-items: center;
+  border-collapse: collapse;
 }
-.left {
-  flex: 1;
+.theader {
+  border: 0.0625rem solid black;
+  color: #ffffff;
   text-align: center;
 }
-.topheader {
-  flex: 1;
-  height: 8.75rem;
-  width: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(#0079d0, #004576);
+.bheader {
   border: 0.0625rem solid black;
-}
-.content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-.toplevel {
-  text-align: center;
-  flex: 1;
   color: #ffffff;
 }
-.bottom {
-  flex: 1;
-  display: flex;
-  align-items: stretch;
-  /* justify-content: flex-end; */
-}
-.bottom_core {
-  /* width: 1.71875rem; */
-  flex: 1;
+.core {
   border: 0.0625rem solid black;
-  text-align: center;
-  display: flex;
-  align-items: center;
-}
-.bottom_core span {
-  flex: 1;
   color: #ffffff;
-  width: 100%;
-  word-break: break-all;
 }
 </style>

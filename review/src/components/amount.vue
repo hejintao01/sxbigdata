@@ -1,7 +1,7 @@
 <template>
   <!-- 省公司各部门各地市公司专家数量分布 -->
-  <div class="box">
-    <div class="charts" ref="chart">
+  <div class="minbox">
+    <div class="mincharts" ref="chart">
 
     </div>
   </div>
@@ -25,11 +25,11 @@ export default {
     this.list = window.parent.exec(formID, "DBNamedQuery('DistributionOfExperts')");
     console.log('this.list', this.list);
     // X,Y轴赋值
-    this.xdata = this.list.allRows.map(el => {
+    this.xdata = JSON.parse(JSON.stringify(this.list)).allRows.map(el => {
       return el.vals[0]
     })
-    this.ydata = this.list.allRows.map(el => {
-      return el.vals[1].c[0]
+    this.ydata = JSON.parse(JSON.stringify(this.list)).allRows.map(el => {
+      return el.vals[1]
     })
   },
   mounted() {
@@ -62,11 +62,16 @@ export default {
         // 标题
         title: {
           text: '省公司各部门各地市公司专家数量分布',
-          left: 'center',
-          padding: [15, 0, 10, 0],
           textStyle: {
-            color: '#FFFFFF'
-          }
+            color: '#FFFFFF',
+            fontSize: 16,
+            fontStyle: 'normal',
+            fontFamily: 'PingFang SC',
+            fontWeight: 500,
+            lineHeight: 16
+          },
+          left: 'left',
+          padding: [24, 0, 0, 24]
         },
         // 提示框
         tooltip: {
@@ -78,17 +83,27 @@ export default {
             }
           }
         },
+        grid: {
+          left: '15%',//距离左边距
+        },
         xAxis: {
           type: 'category',
           data: this.xdata,
           axisLabel: {
-            color: '#FFFFFF'
+            color: 'rgba(255, 255, 255, 0.65)',
+            fontSize: 13.78,
+            fontStyle: 'normal',
+            fontFamily: 'PingFang SC',
+            fontWeight: 500,
+            lineHeight: 15,
+            margin: 9.38,
           },
           axisLine: {
             lineStyle: {
-              color: '#FFFFFF',
-            },
-
+              color: 'rgba(255, 255, 255, 0.45)',
+              width: 0.5,
+              type: 'solid'
+            }
           },
           axisTick: {
             alignWithLabel: true,
@@ -101,11 +116,18 @@ export default {
             show: false,
           },
           axisLabel: {
-            color: '#FFFFFF',
+            color: 'rgba(255, 255, 255, 0.65)',
+            width: 0.5,
+            type: 'solid'
           },
           // 数据水平线
           splitLine: {
-            show: false
+            show: true,
+            lineStyle: {
+              color: 'rgba(255, 255, 255, 0.151934)',
+              width: 0.5,
+              type: 'solid'
+            }
           },
 
         },
@@ -115,7 +137,7 @@ export default {
             data: this.ydata
           }
         ],
-        color: '#5B9BD5'
+        color: '#61DDAA'
       }
       this.chartInstance.setOption(option)
     }

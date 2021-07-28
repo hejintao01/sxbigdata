@@ -12,10 +12,11 @@
           </div>
         </div>
         <div class="contenttitle_box">
-          <div class="contenttitle" v-for="list in listdata" :key="list.pm">
-            <div class="content_box"><span class="contentfont">{{list.head}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.pm}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.name}}</span></div>
+          <div class="contenttitle" v-for="list in filterData" :key="list.pm">
+            <div class="content_box"><span class="contentfont">{{list[3]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[0]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[1]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[2]}}</span></div>
           </div>
         </div>
 
@@ -29,25 +30,53 @@ export default {
   data() {
     return {
       title: '评审认证积分排名',
-      headerdata: [ '排名', '采购经理', '评审认证积分'],
-      listdata: [
-        { head: '1季度', pm: '1', name: '小玉', company: '单位A', core: '8.9' },
-        { head: '1季度', pm: '2', name: '张三', company: '单位B', core: '8.9' },
-        { head: '1季度', pm: '3', name: '李四', company: '单位C', core: '8.9' },
-        { head: '1季度', pm: '4', name: '王五', company: '单位D', core: '8.9', },
-      ]
+      headerdata: [ '排名', '编号','姓名', '评审认证积分'],
+      listdata:null
     }
+  },
+  computed: {
+    filterData: function () {
+      console.log("评审认证积分排名所用数据",JSON.parse(JSON.stringify(this.listdata)));
+      return JSON.parse(JSON.stringify(this.listdata));
+    }
+  },
+   created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('AccreditationPoints')");
+    console.log('评审认证积分排名', arr);
+    // 赋值
+    this.listdata = arr.allRows.map(el => {
+      return el.vals
+    })
+  },
+  methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
   }
 }
 </script>
 <style scoped>
+::-webkit-scrollbar {
+/*隐藏滚轮*/
+display: none;
+}
 .table {
   /* display: flex; */
   max-width: 27.5rem;
   max-height: 30.125rem;
   flex-wrap: wrap;
   /* width: 27.5rem; */
-  overflow: hidden;
+  overflow: auto;
 }
 .tablebox {
   height: 7.5rem;

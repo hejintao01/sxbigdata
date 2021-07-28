@@ -1,5 +1,5 @@
 <template>
-  <!--采购规模分析  -->
+  <!--采购效益分析  -->
   <div class="box">
     <div class="charts" ref="radarchart">
 
@@ -14,25 +14,51 @@ export default {
   data() {
     return {
       chartInstance: null,
-      list: null
+      list: null,
+      xdata: null,
+      ydataone: null,
+      ydatatwo: null
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('PurchasingBenefitAnalysis')");
+    this.list = JSON.parse(JSON.stringify(arr))
+    console.log('采购效益分析', this.list);
+    // X,Y轴赋值
+    this.xdata = this.list.allRows.map(el => {
+      return el.vals[2]
+    })
+    this.ydataone = this.list.allRows.map(el => {
+      return el.vals[3]
+    })
+    this.ydatatwo = this.list.allRows.map(el => {
+      return el.vals[4]
+    })
   },
   mounted() {
     this.initChart()
     this.getData()
   },
   methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.radarchart)
     },
-    // 获取数据
+    // 处理数据
     getData() {
-      // 加强接口渲染
-      // const {data:ret} = await this.$http.get('')
-      const data = [{ name: '1', value: '1' }, { name: '2', value: '2' }]
-      console.log(data);
-      this.list = data
       this.updateData()
     },
     // 更新数据
@@ -71,7 +97,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['2016年', '2017年', '2018年', '2019年', '2020年'],
+          data: this.xdata,
           axisLabel: {
             color: "#FFFFFF",
           },
@@ -96,14 +122,15 @@ export default {
               show: false
             },
             axisLabel: {
+              formatter: '{value}%',
               color: '#FFFFFF'
             },
             axisTick: {
               alignWithLabel: true,
               show: false
             },
-            max: 300,
-            min: 0,
+            // max: 300,
+            // min: 0,
           },
           {
             type: 'value',
@@ -121,33 +148,28 @@ export default {
               alignWithLabel: true,
               show: false
             },
-            max: 300,
-            min: 0,
+            // max: 300,
+            // min: 0,
           }
         ],
         series: [{
           name: '节约率',
-          data: [230, 224, 218, 135, 147, 260],
-          type: 'line',
-          showSymbol: false,
-          color: '#EB7D33',
-
-        }, {
-          name: '金额',
-          data: [130, 214, 208, 115, 127, 240],
+          data: this.ydataone,
           type: 'bar',
           showSymbol: false,
           color: '#5B9BD5',
+
+        }, {
+          name: '金额',
+          data: this.ydatatwo,
+          type: 'line',
+          showSymbol: false,
+          color: '#EB7D33',
           yAxisIndex: 1,
         }
         ]
       }
       this.chartInstance.setOption(option)
-      // setTimeout(function () {
-      //   window.onresize = function () {
-      //     twChart.resize();
-      //   }
-      // }, 200)
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <!-- 采购经理画像 -->
+  <!-- 采购经理能力水平分析 -->
   <div class="box">
     <div class="charts" ref="radarchart">
     </div>
@@ -21,6 +21,17 @@ export default {
     this.getData()
   },
   methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.radarchart)

@@ -1,7 +1,7 @@
 <template>
   <!-- 评审专家画像 -->
-  <div class="box">
-    <div class="charts" ref="radarchart">
+  <div class="minbox">
+    <div class="mincharts" ref="radarchart">
     </div>
   </div>
 </template>
@@ -20,14 +20,15 @@ export default {
     var formID = this.GetRequest("formID");
     // 将yigo查询的值赋值给list
     let arr = window.parent.exec(formID, "DBNamedQuery('RadarImageAndPortraitRanking')");
-    console.log('评审专家画像this.list', arr);
+    let arr1 = JSON.parse(JSON.stringify(arr))
     // 赋值
-    let arr2 = arr.allRows.map(el => {
+    let arr2 = arr1.allRows.map(el => {
       return el.vals
     })
-    arr2[0].slice(4, 8).forEach(e => {
-      this.list.push(e.c[0])
+    arr2[0].slice(4, 9).forEach(e => {
+      this.list.push(e)
     })
+    console.log('评审专家画像this.list', this.list);
   },
   mounted() {
     this.initChart()
@@ -60,15 +61,18 @@ export default {
           text: '评审专家画像',
           textStyle: {
             color: '#FFFFFF',
-            fontWeight: 'bold',
-            fontSize: 18,
+            fontSize: 16,
+            fontStyle: 'normal',
+            fontFamily: 'PingFang SC',
+            fontWeight: 500,
+            lineHeight: 16
           },
-          left: 'center',
-          padding: [15, 0, 10, 0]
+          left: 'left',
+          padding: [24, 0, 0, 24]
         },
         // 提示框
         tooltip: {
-          trigger: 'axis',
+          trigger: 'item',
           axisPointer: {
             type: 'cross',
             label: {
@@ -76,74 +80,66 @@ export default {
             }
           }
         },
-        grid:{
-          left:'15%'
+        grid: {
+          left: '15%'
         },
-      radar: {
-        indicator: [
-          { name: '成长水平', max: 10 },
-          { name: '专业水平', max: 10 },
-          { name: '价值水平', max: 10 },
-          { name: '偏好水平', max: 10 },
-          { name: '信用水平', max: 10 },
-        ],
-          axisLine: {
-          show: false,
-          },
-        name: {
-          color: '#ffffff',
-          }
-      },
-      series: [
-        {
-          name: '预算 vs 开销（Budget vs spending）',
-          type: 'radar',
-          data: [
-            {
-              value: this.list,
-            }
+        radar: {
+          indicator: [
+            { name: '专业水平', max: 10 },
+            { name: '价值水平', max: 10 },
+            { name: '成长水平', max: 10 },
+            { name: '信用水平', max: 10 },
+            { name: '偏好水平', max: 10 },
           ],
-          lineStyle: {
-            color: '#5B9BD5'
+          axisLine: {
+            show: false,
           },
-        }
-      ],
+          // 网格线数
+          splitNumber: 7,
+          name: {
+            color: ' rgba(255, 255, 255, 0.7)',
+            fontSize: 13.8,
+            fontStyle: 'normal',
+            fontFamily: 'PingFang SC',
+            fontWeight: 500,
+            lineHeight: 16
+          },
+          radius: '65%',
+          splitLine: {
+            lineStyle: {
+              color: ['#737373']
+            }
+          },
+          // 隐藏网格填充颜色
+          splitArea: {
+            show: false
+          }
+        },
+        series: [
+          {
+            type: 'radar',
+            name: '专家画像',
+            data: [
+              {
+                value: this.list,
+              }
+            ],
+            opacity: 0.24,
+            lineStyle: {
+              color: '#FF8A65'
+            },
+            symbol: 'none', //去掉折线图中的节点
+            areaStyle: {
+              color: '#FF8A65'
+            }
+          }
+        ],
       }
       this.chartInstance.setOption(option)
+    }
   }
-}
 }
 </script>
 <style>
-.box {
-  /* flex: 1; */
-  /* margin: 20px 15px; */
-  margin: 1.25rem 0.9375rem;
-  /* width: 25%;
-  height: 25%; */
-  width: 27.5rem;
-  height: 33.125rem;
-  border: 1px solid black;
-  background: linear-gradient(#0079d0, #004576);
-}
-.charts {
-  width: 27.5rem;
-  height: 33.125rem;
-}
-.head {
-  width: 27.5rem;
-  height: 33.125rem;
-  border: 1px solid black;
-  margin: 1.25rem 0.625rem;
-  background: linear-gradient(#0079d0, #004576);
-}
-.title {
-  margin: 0.9375rem auto 0.625rem auto;
-  text-align: center;
-}
-.font {
-  font-size: 1.125rem;
-  color: #ffffff;
-  font-weight: bold;
-}
+
 </style>

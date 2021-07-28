@@ -14,25 +14,47 @@ export default {
   data() {
     return {
       chartInstance: null,
-      list: null
+      list: null,
+      xdata: null,
+      ydata: null
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('PurchasingEfficiency')");
+    this.list = JSON.parse(JSON.stringify(arr))
+    console.log('采购效率分析', this.list);
+    // X,Y轴赋值
+    this.xdata = this.list.allRows.map(el => {
+      return el.vals[2]
+    })
+    this.ydata = this.list.allRows.map(el => {
+      return el.vals[3]
+    })
   },
   mounted() {
     this.initChart()
     this.getData()
   },
   methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.radarchart)
     },
-    // 获取数据
+    // 处理数据
     getData() {
-      // 加强接口渲染
-      // const {data:ret} = await this.$http.get('')
-      const data = [{ name: '1', value: '1' }, { name: '2', value: '2' }]
-      console.log(data);
-      this.list = data
       this.updateData()
     },
     // 更新数据
@@ -58,7 +80,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['2015年', '2016年', '2017年', '2018年', '2019年', '2020年'],
+          data: this.xdata,
           axisLabel: {
             color: "#FFFFFF",
           },
@@ -81,11 +103,15 @@ export default {
             show: false
           },
           axisLabel: {
+            formatter: '{value}%',
             color: '#FFFFFF'
+          },
+          axisTick: {
+            show: false
           }
         },
         series: [{
-          data: [150, 230, 224, 218, 135, 147, 260],
+          data: this.ydata,
           type: 'line',
           showSymbol: false,
           lineStyle: {
@@ -95,11 +121,10 @@ export default {
         }]
       }
       this.chartInstance.setOption(option)
-      setTimeout(function () {
-        window.onresize = function () {
-          twChart.resize();
-        }
-      }, 200)
+      let listener = function () {
+        this.chartInstance.resize()
+      }
+      window.addEventListener('resize', listener)
     }
   }
 }

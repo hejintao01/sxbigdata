@@ -1,5 +1,5 @@
 <template>
-  <!-- 评审专家画像排名top250 -->
+  <!-- 采购经理画像排名 -->
   <div class="head">
     <div class="title">
       <span class="font">{{title}}</span>
@@ -12,14 +12,17 @@
           </div>
         </div>
         <div class="contenttitle_box">
-          <div class="contenttitle" v-for="list in listdata" :key="list.pm">
-            <div class="content_box"><span class="contentfont">{{list.pm}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.name}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.company}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.core}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.grown}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.lable}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.price}}</span></div>
+          <div class="contenttitle" v-for="list in filterData" :key="list.pm">
+            <div class="content_box"><span class="contentfont">{{list[8]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[9]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[0]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[1]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[7]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[2]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[3]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[4]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[5]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[6]}}</span></div>
           </div>
         </div>
 
@@ -33,29 +36,53 @@ export default {
   data() {
     return {
       title: '采购经理画像排名',
-      headerdata: ['排名', '专家', '单位', '综合得分', '专业水平', '成长水平', '价值水平'],
-      listdata: [
-        { head: '排名', pm: '1', name: '小玉小玉', company: '单位A', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        { head: '专家', pm: '2', name: '张三', company: '单位B', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        { head: '单位', pm: '3', name: '李四', company: '单位C', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        { head: '综合得分', pm: '4', name: '王五', company: '单位D', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        // { head: '专业水平', pm: '5', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        // { head: '成长水平', pm: '6', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        // { head: '价值水平', pm: '6', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        // { pm: '7', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-      ]
+      headerdata: ['排名','单位', '编号', '姓名','综合得分','任职资格能力', '基本业务能力', '专业胜任能力','实践创新能力','成长传承能力'],
+      listdata:null
     }
+  },
+  computed: {
+    filterData: function () {
+      console.log("采购经理画像排名所用数据",JSON.parse(JSON.stringify(this.listdata)));
+      return JSON.parse(JSON.stringify(this.listdata));
+    }
+  },
+   created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('RankingOfRadar')");
+    console.log('采购经理画像排名', arr);
+    // X,Y轴赋值
+    this.listdata = arr.allRows.map(el => {
+      return el.vals
+    })
+  },
+  methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
   }
 }
 </script>
 <style scoped>
+::-webkit-scrollbar {
+/*隐藏滚轮*/
+display: none;
+}
 .table {
   /* display: flex; */
   max-width: 27.5rem;
   max-height: 30.125rem;
   flex-wrap: wrap;
   /* width: 27.5rem; */
-  overflow: hidden;
+  overflow: auto;
 }
 .tablebox {
   height: 7.5rem;

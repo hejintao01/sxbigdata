@@ -10,6 +10,7 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "echarts": "^4.8.0",
+    "moment": "^2.29.1",
     "postcss-px2rem": "^0.3.0",
     "px2rem-loader": "^0.1.9",
     "vue": "^2.6.11",

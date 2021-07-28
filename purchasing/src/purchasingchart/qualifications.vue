@@ -12,13 +12,15 @@
           </div>
         </div>
         <div class="contenttitle_box">
-          <div class="contenttitle" v-for="list in listdata" :key="list.pm">
-            <div class="content_box"><span class="contentfont">{{list.pm}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.core}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.age}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.education}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.work}}</span></div>
-            <div class="content_box"><span class="contentfont">{{list.book}}</span></div>
+          <div class="contenttitle" v-for="list in filterData" :key="list.pm">
+            <div class="content_box"><span class="contentfont">{{list[7]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[0]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[1]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[2]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[3]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[4]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[5]}}</span></div>
+            <div class="content_box"><span class="contentfont">{{list[6]}}</span></div>
           </div>
         </div>
 
@@ -32,25 +34,53 @@ export default {
   data() {
     return {
       title: '专业资质排名',
-      headerdata: ['排名', '综合得分', '年龄', '学历', '工作年限', '招标师管理项目证书'],
-      listdata: [
-        { pm: '1', core: '9.9', age: '38', education: '博士', work: '16', book: '31' },
-        { pm: '2', core: '9.9', age: '38', education: '博士', work: '16', book: '31' },
-        { pm: '3', core: '9.9', age: '38', education: '博士', work: '16', book: '31' },
-        { pm: '4', core: '9.9', age: '38', education: '博士', work: '16', book: '31' },
-      ]
+      headerdata: ['排名', '编号','姓名','学历', '年龄', '工作年限','证书数量','综合得分'],
+      listdata:null
     }
+  },
+  computed: {
+    filterData: function () {
+      console.log("专业资质排名所用数据",JSON.parse(JSON.stringify(this.listdata)));
+      return JSON.parse(JSON.stringify(this.listdata));
+    }
+  },
+   created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('ProfessionalRanking')");
+    console.log('专业资质排名', arr);
+    // X,Y轴赋值
+    this.listdata = arr.allRows.map(el => {
+      return el.vals
+    })
+  },
+  methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
   }
 }
 </script>
 <style scoped>
+::-webkit-scrollbar {
+/*隐藏滚轮*/
+display: none;
+}
 .table {
   /* display: flex; */
   max-width: 27.5rem;
   max-height: 30.125rem;
   flex-wrap: wrap;
   /* width: 27.5rem; */
-  overflow: hidden;
+  overflow: auto;
 }
 .tablebox {
   height: 7.5rem;

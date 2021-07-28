@@ -40,21 +40,9 @@ export default {
 }
 </script>
 <style scoped>
-.head {
-  width: 27.5rem;
-  height: 33.125rem;
-  border: 0.0625rem solid black;
-  margin: 1.25rem 0.625rem;
-  background: linear-gradient(#0079d0, #004576);
-}
-.title {
-  margin: 0.9375rem auto 0.625rem auto;
-  text-align: center;
-}
-.font {
-  color: #ffffff;
-  font-size: 1.125rem;
-  font-weight: bold;
+::-webkit-scrollbar {
+/*隐藏滚轮*/
+display: none;
 }
 .table {
   display: flex;

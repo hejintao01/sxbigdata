@@ -1,108 +1,133 @@
 <template>
-  <!-- 采购经理历年画像水平趋势分析 -->
-  <div class="head">
-    <div class="title">
-      <span class="font">{{title}}</span>
-    </div>
-    <div class="table">
-      <div class="content">
-        <div class="tablebox">
-          <div v-for="(item,index) in headerdata" :key="index" class="header">
-            <span class="headerfont">{{item}}</span>
-          </div>
-        </div>
-        <div class="contenttitle" v-for="list in listdata" :key="list.pm">
-          <div class="content_box"><span class="contentfont">{{list.pm}}</span></div>
-          <div class="content_box"><span class="contentfont">{{list.name}}</span></div>
-          <div class="content_box"><span class="contentfont">{{list.company}}</span></div>
-          <div class="content_box"><span class="contentfont">{{list.core}}</span></div>
-          <div class="content_box"><span class="contentfont">{{list.grown}}</span></div>
-          <div class="content_box"><span class="contentfont">{{list.lable}}</span></div>
-          <div class="content_box"><span class="contentfont">{{list.price}}</span></div>
-        </div>
-      </div>
+  <!--采购经理历年画像水平历年趋势分析  -->
+  <div class="box">
+    <div class="charts" ref="radarchart">
+
     </div>
   </div>
 </template>
 <script>
+
+
 export default {
-  name: 'toptable',
+  name: 'tend',
   data() {
     return {
-      title: '采购经理历年画像水平趋势分析',
-        headerdata: ['排名', '采购经理', '所属单位', '质量水平', '专业水平', '能力水平', '综合得分'],
-      listdata: [
-        { head: '排名', pm: '1', name: '小玉小玉', company: '单位A', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        { head: '专家', pm: '2', name: '张三', company: '单位B', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        { head: '单位', pm: '3', name: '李四', company: '单位C', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        { head: '综合得分', pm: '4', name: '王五', company: '单位D', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        { head: '专业水平', pm: '5', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        { head: '成长水平', pm: '6', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        { head: '价值水平', pm: '6', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1' },
-        // { pm: '7', name: '陈二', company: '单位E', core: '8.9', lable: '9.1', grown: '8.6', price: '9.1', xinyong: '8.1', aihao: '7.2' },
-      ]
+      chartInstance: null,
+      list: null,
+      xdata: null,
+      ydata: null
+    }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('PortraitLevel')");
+    this.list = JSON.parse(JSON.stringify(arr))
+    console.log('画像水平', this.list);
+    // X,Y轴赋值
+    this.xdata = this.list.allRows.map(el => {
+      return el.vals[2]
+    })
+    this.ydata = this.list.allRows.map(el => {
+      return el.vals[3]
+    })
+  },
+  mounted() {
+    this.initChart()
+    this.getData()
+  },
+  methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
+    // 初始化echartsInstance对象
+    initChart() {
+      this.chartInstance = this.$echarts.init(this.$refs.radarchart)
+    },
+    // 处理数据
+    getData() {
+      this.updateData()
+    },
+    // 更新数据
+    updateData() {
+      const option = {
+        title: {
+          text: '采购经理历年画像水平历年趋势分析',
+          left: 'center',
+          padding: [15, 0, 10, 0],
+          textStyle: {
+            color: '#FFFFFF',
+          }
+        },
+        // 提示框
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            label: {
+              backgroundColor: '#283b56'
+            }
+          }
+        },
+        xAxis: {
+          type: 'category',
+          data: this.xdata,
+          axisLabel: {
+            color: "#FFFFFF",
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#FFFFFF',
+            }
+          },
+          axisTick: {
+            alignWithLabel: true,
+            show: false
+          },
+          splitLine: { //坐标轴在 grid 区域中的分隔线。
+							show: false, //是否显示分隔线。默认数值轴显示，类目轴不显示。
+						},
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: {
+            show: false
+          },
+          splitLine: {
+            show: false
+          },
+          axisLabel: {
+            color: '#FFFFFF'
+          },
+          axisTick:{
+            show:false
+          }
+        },
+        series: [{
+          data: this.ydata,
+          type: 'line',
+          showSymbol: false,
+          lineStyle: {
+            color: '#5B9BD5'
+          }
+
+        }]
+      }
+      this.chartInstance.setOption(option, true)
+      let size = this.chartInstance
+      window.onresize = function () {
+        size.resize();
+      }
     }
   }
 }
 </script>
-<style scoped>
-.table {
-  /* display: flex; */
-  max-width: 27.5rem;
-  max-height: 30.125rem;
-  flex-wrap: wrap;
-  /* width: 27.5rem; */
-  overflow: hidden;
-}
-.tablebox {
-  height: 7.5rem;
-  width: 27.5rem;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-}
-.header {
-  flex: 1;
-  border: 0.0625rem solid black;
-  background-color: #012d86;
-  display: flex;
-  align-items: center;
-}
-.headerfont {
-  flex: 1;
-  font-size: 1.125rem;
-  color: #ffffff;
-  text-align: center;
-}
-.content {
-  flex: 1;
-  margin: 0;
-  padding: 0;
-  height: 30rem;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  align-content: flex-start;
-}
-.contenttitle {
-  width: 27.5rem;
-  height: 5.75rem;
-  display: flex;
-  background-color: #007bd3;
-  align-items: stretch;
-}
-.content_box {
-  flex: 1;
-  border: 0.0625rem solid black;
-  display: flex;
-  align-items: center;
-}
-.contentfont {
-  flex: 1;
-  color: #ffffff;
-  font-size: 1rem;
-  text-align: center;
-}
-</style>

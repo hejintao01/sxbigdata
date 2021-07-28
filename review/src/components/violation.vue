@@ -1,7 +1,7 @@
 <template>
   <!-- 违规行为现状分析 -->
-  <div class="box">
-    <div class="charts" ref="chart">
+  <div class="minbox">
+    <div class="mincharts" ref="chart">
 
     </div>
   </div>
@@ -16,17 +16,24 @@ export default {
       chartInstance: null,
       data: null,
       reason: ['中途退出次数', '迟到次数', '早退次数', '中途出入次数'],
-      pieList: null,
+      // pieList: null,
+      pieList:[
+              {name:'中途退出次数',value:10},
+              {name:'迟到次数',value:40},
+              {name:'早退次数',value:30},
+              {name:'中途出入次数',value:20}
+              ]
     }
   },
   created() {
     var formID = this.GetRequest("formID");
     // 将yigo查询的值赋值给list
-    this.list = window.parent.exec(formID, "DBNamedQuery('StatusQuoOfViolations')");
-    console.log('违规行为现状分析this.list', this.list);
+    let arr = window.parent.exec(formID, "DBNamedQuery('StatusQuoOfViolations')");
+    this.list = JSON.parse(JSON.stringify(arr))
+    console.log('违规行为现状分析', this.list);
     // 赋值
     this.data = this.list.allRows[0].vals.map(el => {
-      return el.c[0]
+      return el
     })
     console.log("数据库值this.data", this.data);
   },
@@ -87,17 +94,18 @@ export default {
         },
         legend: {
           orient: 'vertical',
-          left: 'right',
+          right: 'left',
           y: 'center',
           textStyle: {
             color: '#FFFFFF'
           }
         },
-        color: ['#A5A5A5', '#FFC000', '#5B9BD5', '#ED7D31'],
+        color: ['#5889F0', '#FE5558', ' #72CEFC', '#FFD572','#5DD3A5','#FF67C2'],
         series: [
           {
             type: 'pie',
-            radius: '50%',
+            radius: ['30%','65%'],
+            center:['45%','50%'],
             data: this.pieList,
             label: {
               normal: {

@@ -1,24 +1,23 @@
 <template>
-<!-- 评审专家画像排名top250 -->
-  <div class="head">
+<!-- 评审专家评审出错次数 -->
+  <div class="bighead">
     <div class="title">
       <span class="font">{{title}}</span>
+      <span class="font_two">{{pm}}</span>
     </div>
-    <div class="table">
-      <div class="content">
-        <div class="tablebox">
-          <div v-for="(item,index) in headerdata" :key="index" class="header">
-            <span class="headerfont">{{item}}</span>
-          </div>
-        </div>
-        <div class="contenttitle" v-for="list in listdata" :key="list.pm">
-          <span class="contentfont">{{list[0].c[0]}}</span>
-          <span class="contentfont">{{list[1].c[0]}}</span>
-          <span class="contentfont">{{list[2]}}</span>
-          <span class="contentfont">{{list[3]}}</span>
-          <span class="contentfont">{{list[4].c[0]}}</span>
-        </div>
-      </div>
+    <div class="bigtablebox">
+      <table class="bigtable">
+        <tr class="header">
+          <td class="header_font" v-for="(item,index) in headerdata" :key="index">{{item}}</td>
+        </tr>
+        <tr class="content" v-for="(list,index) in listdata" :key="index">
+          <td class="content_font">{{list[0]}}</td>
+          <td class="content_font">{{list[1]}}</td>
+          <td class="content_font">{{list[2]}}</td>
+          <td class="content_font">{{list[3]}}</td>
+          <td class="content_font">{{list[4]}}</td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -27,7 +26,8 @@ export default {
   name: 'reviewerror',
   data() {
     return {
-      title: '评审专家评审出错次数top10',
+      title: '评审专家评审出错次数',
+      pm:'top10',
       headerdata: ['专家编号', '评审次数', '专家姓名', '单位', '评审出错次数'],
       listdata: null
     }
@@ -38,7 +38,7 @@ export default {
     let arr = window.parent.exec(formID, "DBNamedQuery('NumberOfReviewErrors')");
     console.log('评审专家评审出错次数top10', arr);
     // X,Y轴赋值
-    this.listdata = arr.allRows.map(el => {
+    this.listdata = JSON.parse(JSON.stringify(arr)).allRows.map(el => {
       return el.vals
     })
   },
@@ -58,80 +58,8 @@ export default {
 }
 </script>
 <style scoped>
-.head {
-  width: 27.5rem;
-  height: 33.125rem;
-  border: .0625rem solid black;
-  margin: 1.25rem .625rem;
-  background: linear-gradient(#0079D0,#004576);
-
-}
-.title {
-  margin: .9375rem auto .625rem auto;
-  text-align: center;
-}
-.font {
-  color: #ffffff;
-  font-size: 1.125rem;
-  font-weight: bold;
-}
-.table {
-  /* display: flex; */
-  max-width: 27.5rem;
-  max-height: 30.125rem;
-  flex-wrap: wrap;
-  /* width: 27.5rem; */
-  overflow: auto;
-}
-.tablebox {
-  height: 7.5rem;
-  width: 27.5rem;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-}
-.header {
-  flex: 1;
-  border: .0625rem solid black;
-  /* position: relative; */
-  display: flex;
-  align-items: center;
-  background-color: #012D86;
-}
-.headerfont {
-  flex: 1;
-  font-size: 1.125rem;
-  text-align: center;
-  /* position: absolute;
-  bottom: 0px;
-  padding: 0px;
-  margin: 0px; */
-  color: #ffffff;
-}
-.content {
-  flex: 1;
-  margin: 0;
-  padding: 0;
-  /* height: 30rem; */
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  align-content: flex-start;
-}
-.contenttitle {
-  width: 27.5rem;
-  height: 3.75rem;
-  display: flex;
-  background-color: #007BD3;
-}
-.contentfont {
-  flex: 1;
-  color: #ffffff;
-  font-size: 1rem;
-  line-height: 3.75rem;
-  text-align: center;
-  border: .0625rem solid black;
+::-webkit-scrollbar {
+  /*隐藏滚轮*/
+  display: none;
 }
 </style>

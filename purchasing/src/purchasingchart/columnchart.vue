@@ -10,32 +10,55 @@
 
 export default {
   name: 'columnchart',
-  data() {
+    data() {
     return {
       chartInstance: null,
-      list: null
+      list: []
     }
+  },
+  created() {
+    var formID = this.GetRequest("formID");
+    // 将yigo查询的值赋值给list
+    let arr = window.parent.exec(formID, "DBNamedQuery('RankingOfRadar')");
+    console.log('采购经理画像', arr);
+    // 赋值
+    let arr2 = arr.allRows.map(el => {
+      return el.vals
+    })
+    let arr3 = JSON.parse(JSON.stringify(arr2))
+    arr3[0].slice(2, 7).forEach(e => {
+      this.list.push(e)
+    })
   },
   mounted() {
     this.initChart()
     this.getData()
   },
   methods: {
+    // 获取yigo中的数据
+    GetRequest(name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURIComponent(r[2]);
+      }
+      else {
+        return null;
+      }
+    },
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.radarchart)
     },
-    // 获取数据
+    // 数据处理
     getData() {
-      // 加强接口渲染
-      // const {data:ret} = await this.$http.get('')
-      const data = [{ name: '1', value: '1' }, { name: '2', value: '2' }]
-      console.log(data);
-      this.list = data
       this.updateData()
     },
     // 更新数据
     updateData() {
+      let res = ''
+      res = JSON.parse(JSON.stringify(this.list))
+      console.log("采购经理绘图数据",res);
       const option = {
         title: {
           text: '采购经理画像',
@@ -49,7 +72,7 @@ export default {
         },
         // 提示框
         tooltip: {
-          trigger: 'axis',
+          trigger: 'item',
           axisPointer: {
             type: 'cross',
             label: {
@@ -57,46 +80,47 @@ export default {
             }
           }
         },
-        grid: {
-          top: '50%',//距上边距
-
-          left: '1%',//距离左边距
-
-          right: '1%',//距离右边距
-
-          bottom: '1%',//距离下边距
-
+        grid:{
+          left:'15%'
         },
-        radar: {
-          indicator: [
-            { name: '质量水平', max: 6500 },
-            { name: '专业水平', max: 16000 },
-            { name: '能力水平', max: 30000 },
-          ],
+      radar: {
+        indicator: [  
+          { name: '任职资格\n\n能力'},
+          { name: '基本业务\n\n能力'},
+          { name: '专业胜任\n\n能力'},
+          { name: '实践创新\n\n能力'},
+          { name: '成长传承\n\n能力'},
+        ],
           axisLine: {
-            show: false
+          show: false,
           },
-          name:{
-            color:'#ffffff'
-          }
-        },
-        series: [
-          {
-            type: 'radar',
-            data: [
-              {
-                value: [4200, 3000, 20000, 35000, 50000, 18000],
-              }
-            ],
-            lineStyle: {
-              color: '#5B9BD5'
-            },
-          }
-        ]
+        name: {
+          color: '#ffffff',
+          },
+          radius:'70%',
+      },
+      series: [
+        {
+          type: 'radar',
+          name:'采购经理画像',
+          data: [
+            {
+              value: res,
+            }
+          ],
+          lineStyle: {
+            color: '#5B9BD5'
+          },
+        }
+      ],
       }
-      this.chartInstance.setOption(option)
-    }
+      this.chartInstance.setOption(option,true)
+      let size = this.chartInstance
+      window.onresize = function () {
+        size.resize();
+      }
   }
+}
 }
 </script>
 <style>
