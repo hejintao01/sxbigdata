@@ -11,7 +11,8 @@ const postcss = px2rem({
 
 // 使用等比适配插件
 module.exports = {
-  lintOnSave: true,
+  // 关闭lint检查
+  lintOnSave: false,
   devServer: {
     open: true
   },
